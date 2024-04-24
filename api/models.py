@@ -24,12 +24,20 @@ class Bolim(models.Model):
 
 
 class Mavzu(models.Model):
-    qism = models.ForeignKey(Qism, on_delete=models.CASCADE, related_name='qism')
-    bolim = models.ForeignKey(Bolim, on_delete=models.CASCADE, related_name='bolim')
+    qism = models.ForeignKey(Qism, on_delete=models.CASCADE, related_name='mavzular')
+    bolim = models.ForeignKey(Bolim, on_delete=models.CASCADE, related_name='mavzular')
     savol = models.TextField()
     javob = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    savol_id = models.PositiveIntegerField(default=random.randint(10000, 99999), unique=True)
+    savol_id = models.PositiveBigIntegerField()
+
+    def save(self, *args, **kwargs):
+        if not self.savol_id:
+            self.savol_id = self.generate_unique_id()
+        super().save(*args, **kwargs)
+
+    def generate_unique_id(self):
+        return random.randint(10000, 99999)
 
     def __str__(self):
         return self.savol
